@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpPower = 16f;
     public float speed = 8f;
 
-   [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
 
