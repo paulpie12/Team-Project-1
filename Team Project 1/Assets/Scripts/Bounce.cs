@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Bounce : MonoBehaviour
 {
+    //This Variable changes the bounce height
     public float bounce;
+    //This creates a spot in unity to like the players rigidbody 2D to
     public Rigidbody2D rb2D;
-    
 
-        private void OnCollisionEnter2D(Collision2D collision)
+    //This checks if the collision is with an enemy tag, and if it is, then is destroys the object and makes the player character bounce
+    private void OnCollisionEnter2D(Collision2D collision)
         {
-        //This checks if the collision
+        
             if (collision.gameObject.CompareTag("Enemy"))
             {
             Debug.Log("The Collision is occurring");
@@ -19,18 +21,3 @@ public class Bounce : MonoBehaviour
             }  
         }
     }
-
-/*
-private void Update()
-{
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Enemy"))
-        {
-            Debug.Log("The Collision is occurring");
-        }
-    }
-}
-
-}
-  */
