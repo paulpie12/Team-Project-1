@@ -6,23 +6,56 @@ public class PlayerMovement : MonoBehaviour
 {
     private float _horizontal;
     private bool _isFacingRight = true;
+    private bool _doubleJump;
+
+    private float _initalGravityScale;
 
 
     public float jumpPower = 16f;
     public float speed = 8f;
-
+    [SerializeField] private float _glidingSpeed;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
+    private void Start()
+    {
+        _initalGravityScale = rb.gravityScale;
+    }
 
-    // Update is called once per frame
     void Update()
     {
+        var glidingInput = Input.GetButton("Jump");
+        
+        //Gliding
+        if(glidingInput && rb.velocity.y <= 0)
+        {
+            rb.gravityScale = 0;
+            rb.velocity = new Vector2(rb.velocity.x, -_glidingSpeed);
+        }
+        else
+        {
+            rb.gravityScale = _initalGravityScale;
+        }
+        
+        
+        
+        //jumping 
+
         _horizontal = Input.GetAxisRaw("Horizontal");
 
-        if(Input.GetButtonDown("Jump") && grounded())
+        if (grounded() && !Input.GetButton("Jump"))
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+            _doubleJump = false;
+        }
+
+        if(Input.GetButtonDown("Jump"))
+        {
+            if (grounded() || _doubleJump)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+
+                _doubleJump = !_doubleJump;
+            }
         }
 
         if(Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
