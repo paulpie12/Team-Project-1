@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     private float _horizontal;
     private bool _isFacingRight = true;
     private bool _doubleJump;
+    Animator animator;
 
     private float _initalGravityScale;
 
@@ -22,7 +23,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
-
     private void Start()
 
     {
@@ -31,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        animator = GetComponent<Animator>();
         if(movementControl == true)
         {
             var glidingInput = Input.GetButton("Jump");
@@ -40,6 +41,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 rb.gravityScale = 0;
                 rb.velocity = new Vector2(rb.velocity.x, -_glidingSpeed);
+                animator.SetFloat("MoveX", 0);
+                animator.SetFloat("MoveY", -1);
             }
             else
             {
@@ -60,6 +63,8 @@ public class PlayerMovement : MonoBehaviour
                 if (grounded() || _doubleJump)
                 {
                     rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+                    animator.SetFloat("MoveX", 0);
+                    animator.SetFloat("MoveY", 1);
 
                     _doubleJump = !_doubleJump;
                 }
@@ -82,6 +87,8 @@ public class PlayerMovement : MonoBehaviour
                 Debug.Log("Start of Spindash");
                 startTime = Time.time;
                 movementControl = false;
+                animator.SetFloat("MoveX", 1);
+                  animator.SetFloat("MoveY", 1);
 
             }
             else if (Input.GetKeyUp(KeyCode.Z))
@@ -115,6 +122,8 @@ public class PlayerMovement : MonoBehaviour
             Vector3 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
+            animator.SetFloat("MoveX", 1);
+            animator.SetFloat("MoveY", 0);
         }
     }
 }
