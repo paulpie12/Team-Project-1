@@ -6,21 +6,22 @@ public class Gem : MonoBehaviour
 {
     public int value;
 
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private AudioSource source;
+
+    Collider2D soundTrigger;
+
+    void Awake()
     {
-
+        source = GetComponent<AudioSource>();
+        soundTrigger = GetComponent<Collider2D>();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-    private void OnCollisionEnter2D(Collision2D other)
+    
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            source.Play();
             Destroy(gameObject);
             GemCounter.instance.IncreaseGems(value);
         }
