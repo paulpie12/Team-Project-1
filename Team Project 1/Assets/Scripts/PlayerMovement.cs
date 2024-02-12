@@ -13,59 +13,66 @@ public class PlayerMovement : MonoBehaviour
     //This integer controls how fast the player is once they exit the spindash
     private float startTime;
 
+    //This bool controls player movement
+    private bool movementControl = true;
+
     public float jumpPower = 16f;
     public float speed = 8f;
     [SerializeField] private float _glidingSpeed;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
+
     private void Start()
+
     {
         _initalGravityScale = rb.gravityScale;
     }
 
     void Update()
     {
-        var glidingInput = Input.GetButton("Jump");
-        
-        //Gliding
-        if(glidingInput && rb.velocity.y <= 0)
+        if(movementControl == true)
         {
-            rb.gravityScale = 0;
-            rb.velocity = new Vector2(rb.velocity.x, -_glidingSpeed);
-        }
-        else
-        {
-            rb.gravityScale = _initalGravityScale;
-        }
-        
-        
-        
-        //jumping 
+            var glidingInput = Input.GetButton("Jump");
 
-        _horizontal = Input.GetAxisRaw("Horizontal");
-
-        if (grounded() && !Input.GetButton("Jump"))
-        {
-            _doubleJump = false;
-        }
-
-        if(Input.GetButtonDown("Jump"))
-        {
-            if (grounded() || _doubleJump)
+            //Gliding
+            if (glidingInput && rb.velocity.y <= 0)
             {
-                rb.velocity = new Vector2(rb.velocity.x, jumpPower);
-
-                _doubleJump = !_doubleJump;
+                rb.gravityScale = 0;
+                rb.velocity = new Vector2(rb.velocity.x, -_glidingSpeed);
             }
-        }
+            else
+            {
+                rb.gravityScale = _initalGravityScale;
+            }
 
-        if(Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
-        }
+            //jumping 
 
-        flipplayer();
+            _horizontal = Input.GetAxisRaw("Horizontal");
+
+            if (grounded() && !Input.GetButton("Jump"))
+            {
+                _doubleJump = false;
+            }
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                if (grounded() || _doubleJump)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+
+                    _doubleJump = !_doubleJump;
+                }
+            }
+
+            if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            }
+
+            flipplayer();
+        }
+        
 
         //This is the code for the spindash
         if (grounded())
@@ -74,18 +81,25 @@ public class PlayerMovement : MonoBehaviour
             {
                 Debug.Log("Start of Spindash");
                 startTime = Time.time;
+                movementControl = false;
+
             }
             else if (Input.GetKeyUp(KeyCode.Z))
             {
                 Debug.Log("End of Spindash, held down for " + (Time.time - startTime).ToString("00:00.00"));
-                rb.AddForce(transform.up * 50f, ForceMode2D.Impulse);
+                movementControl = true;
+                rb.AddForce(transform.up * 35f, ForceMode2D.Impulse);
             }
         }
     }
-
+    
     private void FixedUpdate()
     {
-        rb.velocity = new Vector2(_horizontal * speed, rb.velocity.y);
+        if (movementControl == true)
+        {
+            rb.velocity = new Vector2(_horizontal * speed, rb.velocity.y);
+        }
+        
     }
 
     private bool grounded()

@@ -8,7 +8,7 @@ public class GemCounter : MonoBehaviour
     public static GemCounter instance;
 
     public TMP_Text gemText;
-    public int currentGems = 0;
+    static public int currentGems = 0;
     public int gemslost = 1;
 
     private void Awake()
