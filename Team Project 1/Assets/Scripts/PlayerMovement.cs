@@ -10,6 +10,8 @@ public class PlayerMovement : MonoBehaviour
 
     private float _initalGravityScale;
 
+    //This integer controls how fast the player is once they exit the spindash
+    private float startTime;
 
     public float jumpPower = 16f;
     public float speed = 8f;
@@ -64,6 +66,21 @@ public class PlayerMovement : MonoBehaviour
         }
 
         flipplayer();
+
+        //This is the code for the spindash
+        if (grounded())
+        {
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                Debug.Log("Start of Spindash");
+                startTime = Time.time;
+            }
+            else if (Input.GetKeyUp(KeyCode.Z))
+            {
+                Debug.Log("End of Spindash, held down for " + (Time.time - startTime).ToString("00:00.00"));
+                rb.AddForce(transform.up * 50f, ForceMode2D.Impulse);
+            }
+        }
     }
 
     private void FixedUpdate()

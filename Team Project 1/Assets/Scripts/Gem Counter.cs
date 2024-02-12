@@ -9,6 +9,7 @@ public class GemCounter : MonoBehaviour
 
     public TMP_Text gemText;
     public int currentGems = 0;
+    public int gemslost = 1;
 
     private void Awake()
     {
@@ -24,6 +25,12 @@ public class GemCounter : MonoBehaviour
     public void IncreaseGems(int v)
     {
         currentGems += v;
+        gemText.text = "Gems: " + currentGems.ToString();
+    }
+
+    public void DecreaseGems(int v)
+    {
+        currentGems -= gemslost;
         gemText.text = "Gems: " + currentGems.ToString();
     }
 }
